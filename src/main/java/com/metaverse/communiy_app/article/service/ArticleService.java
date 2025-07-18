@@ -4,8 +4,8 @@ import com.metaverse.communiy_app.article.domain.Article;
 import com.metaverse.communiy_app.article.dto.ArticleRequestDto;
 import com.metaverse.communiy_app.article.dto.ArticleResponseDto;
 import com.metaverse.communiy_app.article.repository.ArticleRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -16,7 +16,8 @@ public class ArticleService {
     public ArticleService(ArticleRepository articleRepository) {
         this.articleRepository = articleRepository;
     }
-    
+
+    @Transactional
     public ArticleResponseDto createArticle(ArticleRequestDto articleRequestDto) {
         Article article = new Article(articleRequestDto);
         Article savedArticle = articleRepository.save(article);
@@ -24,6 +25,7 @@ public class ArticleService {
         return articleResponseDto;
     }
 
+    @Transactional(readOnly = true)
     public List<ArticleResponseDto> getArticles() {
         List<ArticleResponseDto> responseList = articleRepository.findAllByOrderByCreatedAtDesc().stream().map(ArticleResponseDto::new).toList();
         return responseList;
@@ -36,6 +38,7 @@ public class ArticleService {
         return id;
     }
 
+    @Transactional
     public Long deleteArticle(Long id) {
         Article article = findArticle(id);
         articleRepository.delete(article);
