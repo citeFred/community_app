@@ -1,11 +1,15 @@
 package com.metaverse.communiy_app.board.domain;
 
+import com.metaverse.communiy_app.article.domain.Article;
 import com.metaverse.communiy_app.board.dto.BoardRequestDto;
 import com.metaverse.communiy_app.common.domain.TimeStamped;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -19,6 +23,10 @@ public class Board extends TimeStamped {
 
     @Column(nullable = false)
     private String title;
+
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<Article> articles =  new ArrayList<>();
+
 
     public Board(BoardRequestDto boardRequestDto) {
         this.title = boardRequestDto.getTitle();
