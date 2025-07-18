@@ -1,5 +1,7 @@
 package com.metaverse.communiy_app.article.domain;
 
+import com.metaverse.communiy_app.article.dto.ArticleRequestDto;
+import com.metaverse.communiy_app.board.domain.Board;
 import com.metaverse.communiy_app.common.domain.TimeStamped;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -21,4 +23,19 @@ public class Article extends TimeStamped {
 
     @Column(length = 1000, nullable = false, columnDefinition = "TEXT")
     private String content;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "board_id", nullable = false)
+    private Board board;
+
+
+    public Article(ArticleRequestDto articleRequestDto) {
+        this.title = articleRequestDto.getTitle();
+        this.content = articleRequestDto.getContent();
+    }
+
+    public void update(ArticleRequestDto articleRequestDto) {
+        this.title = articleRequestDto.getTitle();
+        this.content = articleRequestDto.getContent();
+    }
 }
