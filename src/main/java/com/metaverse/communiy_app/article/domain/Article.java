@@ -1,6 +1,5 @@
 package com.metaverse.communiy_app.article.domain;
 
-import com.metaverse.communiy_app.article.dto.ArticleRequestDto;
 import com.metaverse.communiy_app.board.domain.Board;
 import com.metaverse.communiy_app.common.domain.TimeStamped;
 import jakarta.persistence.*;
@@ -29,13 +28,14 @@ public class Article extends TimeStamped {
     private Board board;
 
 
-    public Article(ArticleRequestDto articleRequestDto) {
-        this.title = articleRequestDto.getTitle();
-        this.content = articleRequestDto.getContent();
+    public Article(String title, String content, Board board) {
+        this.title = title;
+        this.content = content;
+        this.board = board;
     }
 
-    public void update(ArticleRequestDto articleRequestDto) {
-        this.title = articleRequestDto.getTitle();
-        this.content = articleRequestDto.getContent();
+    public void update(String title, String content)  {
+        this.title = title;
+        this.content = content;
     }
 }

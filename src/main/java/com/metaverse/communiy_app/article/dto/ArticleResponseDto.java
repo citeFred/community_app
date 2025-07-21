@@ -13,6 +13,7 @@ public class ArticleResponseDto {
     private Long id;
     private String title;
     private String content;
+    private String boardTitle;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDateTime createAt;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
@@ -24,5 +25,6 @@ public class ArticleResponseDto {
         this.content = article.getContent();
         this.createAt = article.getCreatedAt();
         this.modifiedAt = article.getModifiedAt();
+        this.boardTitle = article.getBoard().getTitle(); // 연관관계 정보 가져오기(Lazy Loading) 실행부
     }
 }
