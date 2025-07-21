@@ -29,10 +29,19 @@ public class CommentService {
     public CommentResponseDto createComment(Long boardId, Long articleId, CommentRequestDto commentRequestDto) {
         Article article = getValidArticleFromBoardAndArticleId(boardId, articleId);
 
-        Comment comment = new Comment(
-                commentRequestDto.getContent(),
-                article
-        );
+        Comment comment;
+        if (commentRequestDto.getParentCommentId() != null) {
+            Comment parentComment = commentRepository.findById(commentRequestDto.getParentCommentId())
+                    .orElseThrow(() -> new IllegalArgumentException("부모 댓글을 찾을 수 없습니다. Comment ID: " + commentRequestDto.getParentCommentId()));
+
+            if (!parentComment.getArticle().getId().equals(article.getId())) {
+                throw new IllegalArgumentException("대댓글은 부모 댓글과 동일한 게시글에 속해야 합니다.");
+            }
+            comment = new Comment(commentRequestDto.getContent(), article, parentComment);
+        } else {
+            comment = new Comment(commentRequestDto.getContent(), article);
+        }
+
         Comment savedComment = commentRepository.save(comment);
         return new CommentResponseDto(savedComment);
     }
