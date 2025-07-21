@@ -45,6 +45,12 @@ public class ArticleService {
         return articleResponseDtoList;
     }
 
+    @Transactional(readOnly = true)
+    public ArticleResponseDto getArticleById(Long id) {
+        Article article = findArticle(id);
+        return new ArticleResponseDto(article);
+    }
+
     @Transactional
     public ArticleResponseDto updateArticle(Long id, ArticleRequestDto articleRequestDto) {
         Article article = findArticle(id);

@@ -28,11 +28,11 @@ public class Board extends TimeStamped {
     List<Article> articles =  new ArrayList<>();
 
 
-    public Board(BoardRequestDto boardRequestDto) {
-        this.title = boardRequestDto.getTitle();
+    public Board(String title) {
+        this.title = title;
     }
 
-    public void update(BoardRequestDto boardRequestDto) {
-        this.title = boardRequestDto.getTitle();
+    public void update(String title) {
+        this.title = title;
     }
 }
