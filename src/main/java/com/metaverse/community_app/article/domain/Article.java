@@ -2,10 +2,14 @@ package com.metaverse.community_app.article.domain;
 
 import com.metaverse.community_app.board.domain.Board;
 import com.metaverse.community_app.common.domain.TimeStamped;
+import com.metaverse.community_app.file.domain.File;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -27,6 +31,8 @@ public class Article extends TimeStamped {
     @JoinColumn(name = "board_id", nullable = false)
     private Board board;
 
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<File> files = new ArrayList<>();
 
     public Article(String title, String content, Board board) {
         this.title = title;
