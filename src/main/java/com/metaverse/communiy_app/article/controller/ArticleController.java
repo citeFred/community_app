@@ -30,6 +30,12 @@ public class ArticleController {
         return ResponseEntity.ok(articleResponseDtoList);
     }
 
+    @GetMapping("/articles/{id}")
+    public ResponseEntity<ArticleResponseDto> getArticleById(@PathVariable Long id) {
+        ArticleResponseDto articleResponseDto = articleService.getArticleById(id);
+        return ResponseEntity.ok(articleResponseDto);
+    }
+
     @PutMapping("/articles/{id}")
     public ResponseEntity<ArticleResponseDto> updateArticle(@PathVariable Long id, @RequestBody ArticleRequestDto articleRequestDto) {
         ArticleResponseDto updatedArticle = articleService.updateArticle(id, articleRequestDto);
