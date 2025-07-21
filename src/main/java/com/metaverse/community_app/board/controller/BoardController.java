@@ -17,7 +17,7 @@ public class BoardController {
     public BoardController(BoardService boardService) {
         this.boardService = boardService;
     }
-    
+
     @PostMapping("/boards")
     public ResponseEntity<BoardResponseDto> createBoard(@RequestBody BoardRequestDto boardRequestDto) {
         BoardResponseDto boardResponseDto = boardService.createBoard(boardRequestDto);
@@ -31,13 +31,13 @@ public class BoardController {
     }
 
     @GetMapping("/boards/{id}")
-    public ResponseEntity<BoardResponseDto> getBoardsById(@PathVariable Long id) {
+    public ResponseEntity<BoardResponseDto> getBoardById(@PathVariable Long id) {
         BoardResponseDto boardResponseDto = boardService.getBoardById(id);
         return ResponseEntity.ok(boardResponseDto);
     }
 
     @PutMapping("/boards/{id}")
-    public ResponseEntity<BoardResponseDto> updateBoard(@PathVariable Long id, @RequestBody BoardRequestDto boardRequestDto) { // 반환 타입 변경
+    public ResponseEntity<BoardResponseDto> updateBoard(@PathVariable Long id, @RequestBody BoardRequestDto boardRequestDto) {
         BoardResponseDto updatedBoard = boardService.updateBoard(id, boardRequestDto);
         return ResponseEntity.ok(updatedBoard);
     }
