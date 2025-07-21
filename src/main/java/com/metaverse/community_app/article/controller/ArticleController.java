@@ -6,6 +6,8 @@ import com.metaverse.community_app.article.service.ArticleService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.RequestPart;
 
 import java.util.List;
 
@@ -21,8 +23,10 @@ public class ArticleController {
     @PostMapping("/boards/{boardId}/articles")
     public ResponseEntity<ArticleResponseDto> createArticleForBoard(
             @PathVariable Long boardId,
-            @RequestBody ArticleRequestDto articleRequestDto) {
-        ArticleResponseDto articleResponseDto = articleService.createArticle(boardId, articleRequestDto);
+            @RequestPart("articleData") ArticleRequestDto articleRequestDto,
+            @RequestPart(value = "file", required = false) MultipartFile file) {
+
+        ArticleResponseDto articleResponseDto = articleService.createArticle(boardId, articleRequestDto, file);
         return ResponseEntity.status(HttpStatus.CREATED).body(articleResponseDto);
     }
 
