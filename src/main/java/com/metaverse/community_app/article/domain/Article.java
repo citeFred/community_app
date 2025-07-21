@@ -1,6 +1,7 @@
 package com.metaverse.community_app.article.domain;
 
 import com.metaverse.community_app.board.domain.Board;
+import com.metaverse.community_app.comment.domain.Comment;
 import com.metaverse.community_app.common.domain.TimeStamped;
 import com.metaverse.community_app.file.domain.File;
 import jakarta.persistence.*;
@@ -30,6 +31,9 @@ public class Article extends TimeStamped {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id", nullable = false)
     private Board board;
+
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<File> files = new ArrayList<>();
