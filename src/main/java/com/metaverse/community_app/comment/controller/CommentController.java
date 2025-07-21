@@ -18,10 +18,21 @@ public class CommentController {
         this.commentService = commentService;
     }
 
-    @PostMapping("/comments")
-    public ResponseEntity<CommentResponseDto> createComment(@RequestBody CommentRequestDto commentRequestDto) {
-        CommentResponseDto commentResponseDto = commentService.createComment(commentRequestDto);
+    @PostMapping("/boards/{boardId}/articles/{articleId}/comments")
+    public ResponseEntity<CommentResponseDto> createCommentForArticle(
+            @PathVariable Long boardId,
+            @PathVariable Long articleId,
+            @RequestBody CommentRequestDto commentRequestDto) {
+        CommentResponseDto commentResponseDto = commentService.createComment(boardId, articleId, commentRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(commentResponseDto);
+    }
+
+    @GetMapping("/boards/{boardId}/articles/{articleId}/comments")
+    public ResponseEntity<List<CommentResponseDto>> getCommentsByArticleId(
+            @PathVariable Long boardId,
+            @PathVariable Long articleId) {
+        List<CommentResponseDto> commentResponseDtoList = commentService.getCommentsByArticleId(boardId, articleId);
+        return ResponseEntity.ok(commentResponseDtoList);
     }
 
     @GetMapping("/comments")
@@ -30,21 +41,31 @@ public class CommentController {
         return ResponseEntity.ok(commentResponseDtoList);
     }
 
-    @GetMapping("/comments/{id}")
-    public ResponseEntity<CommentResponseDto> getCommentById(@PathVariable Long id) {
-        CommentResponseDto commentResponseDto = commentService.getCommentById(id);
+    @GetMapping("/boards/{boardId}/articles/{articleId}/comments/{id}")
+    public ResponseEntity<CommentResponseDto> getCommentById(
+            @PathVariable Long boardId,
+            @PathVariable Long articleId,
+            @PathVariable Long id) {
+        CommentResponseDto commentResponseDto = commentService.getCommentById(boardId, articleId, id);
         return ResponseEntity.ok(commentResponseDto);
     }
 
-    @PutMapping("/comments/{id}")
-    public ResponseEntity<CommentResponseDto> updateComment(@PathVariable Long id, @RequestBody CommentRequestDto commentRequestDto) {
-        CommentResponseDto updatedComment = commentService.updateComment(id, commentRequestDto);
+    @PutMapping("/boards/{boardId}/articles/{articleId}/comments/{id}")
+    public ResponseEntity<CommentResponseDto> updateComment(
+            @PathVariable Long boardId,
+            @PathVariable Long articleId,
+            @PathVariable Long id,
+            @RequestBody CommentRequestDto commentRequestDto) {
+        CommentResponseDto updatedComment = commentService.updateComment(boardId, articleId, id, commentRequestDto);
         return ResponseEntity.ok(updatedComment);
     }
 
-    @DeleteMapping("/comments/{id}")
-    public ResponseEntity<Void> deleteComment(@PathVariable Long id) {
-        commentService.deleteComment(id);
+    @DeleteMapping("/boards/{boardId}/articles/{articleId}/comments/{id}")
+    public ResponseEntity<Void> deleteComment(
+            @PathVariable Long boardId,
+            @PathVariable Long articleId,
+            @PathVariable Long id) {
+        commentService.deleteComment(boardId, articleId, id);
         return ResponseEntity.noContent().build();
     }
 }
