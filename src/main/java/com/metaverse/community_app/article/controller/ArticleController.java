@@ -18,10 +18,19 @@ public class ArticleController {
         this.articleService = articleService;
     }
 
-    @PostMapping("/articles")
-    public ResponseEntity<ArticleResponseDto> createArticle(@RequestBody ArticleRequestDto articleRequestDto) {
-        ArticleResponseDto articleResponseDto = articleService.createArticle(articleRequestDto);
+    @PostMapping("/boards/{boardId}/articles")
+    public ResponseEntity<ArticleResponseDto> createArticleForBoard(
+            @PathVariable Long boardId,
+            @RequestBody ArticleRequestDto articleRequestDto) {
+        ArticleResponseDto articleResponseDto = articleService.createArticle(boardId, articleRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(articleResponseDto);
+    }
+
+    @GetMapping("/boards/{boardId}/articles")
+    public ResponseEntity<List<ArticleResponseDto>> getArticlesByBoardId(
+            @PathVariable Long boardId) {
+        List<ArticleResponseDto> articleResponseDtoList = articleService.getArticlesByBoardId(boardId);
+        return ResponseEntity.ok(articleResponseDtoList);
     }
 
     @GetMapping("/articles")
@@ -30,21 +39,28 @@ public class ArticleController {
         return ResponseEntity.ok(articleResponseDtoList);
     }
 
-    @GetMapping("/articles/{id}")
-    public ResponseEntity<ArticleResponseDto> getArticleById(@PathVariable Long id) {
-        ArticleResponseDto articleResponseDto = articleService.getArticleById(id);
+    @GetMapping("/boards/{boardId}/articles/{id}")
+    public ResponseEntity<ArticleResponseDto> getArticleById(
+            @PathVariable Long boardId,
+            @PathVariable Long id) {
+        ArticleResponseDto articleResponseDto = articleService.getArticleById(boardId, id);
         return ResponseEntity.ok(articleResponseDto);
     }
 
-    @PutMapping("/articles/{id}")
-    public ResponseEntity<ArticleResponseDto> updateArticle(@PathVariable Long id, @RequestBody ArticleRequestDto articleRequestDto) {
-        ArticleResponseDto updatedArticle = articleService.updateArticle(id, articleRequestDto);
+    @PutMapping("/boards/{boardId}/articles/{id}")
+    public ResponseEntity<ArticleResponseDto> updateArticle(
+            @PathVariable Long boardId,
+            @PathVariable Long id,
+            @RequestBody ArticleRequestDto articleRequestDto) {
+        ArticleResponseDto updatedArticle = articleService.updateArticle(boardId, id, articleRequestDto);
         return ResponseEntity.ok(updatedArticle);
     }
 
-    @DeleteMapping("/articles/{id}")
-    public ResponseEntity<Void> deleteArticle(@PathVariable Long id) {
-        articleService.deleteArticle(id);
+    @DeleteMapping("/boards/{boardId}/articles/{id}")
+    public ResponseEntity<Void> deleteArticle(
+            @PathVariable Long boardId,
+            @PathVariable Long id) {
+        articleService.deleteArticle(boardId, id);
         return ResponseEntity.noContent().build();
     }
 }

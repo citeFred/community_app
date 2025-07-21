@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ArticleService {
@@ -22,9 +23,9 @@ public class ArticleService {
     }
 
     @Transactional
-    public ArticleResponseDto createArticle(ArticleRequestDto articleRequestDto) {
-        Board board = boardRepository.findById(articleRequestDto.getBoardId()).orElseThrow(() ->
-                new IllegalArgumentException("해당 게시판을 찾을 수 없습니다.")
+    public ArticleResponseDto createArticle(Long boardId, ArticleRequestDto articleRequestDto) {
+        Board board = boardRepository.findById(boardId).orElseThrow(() ->
+                new IllegalArgumentException("해당 게시판을 찾을 수 없습니다. Board ID: " + boardId)
         );
         Article article = new Article(
                 articleRequestDto.getTitle(),
@@ -32,28 +33,35 @@ public class ArticleService {
                 board
         );
         Article savedArticle = articleRepository.save(article);
-        ArticleResponseDto articleResponseDto = new ArticleResponseDto(savedArticle);
-        return articleResponseDto;
+        return new ArticleResponseDto(savedArticle);
     }
 
     @Transactional(readOnly = true)
     public List<ArticleResponseDto> getArticles() {
-        List<ArticleResponseDto> articleResponseDtoList = articleRepository.findAllByOrderByCreatedAtDesc()
-                .stream()
+        return articleRepository.findAllByOrderByCreatedAtDesc().stream()
                 .map(ArticleResponseDto::new)
-                .toList();
-        return articleResponseDtoList;
+                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public ArticleResponseDto getArticleById(Long id) {
-        Article article = findArticle(id);
+    public List<ArticleResponseDto> getArticlesByBoardId(Long boardId) {
+        boardRepository.findById(boardId).orElseThrow(() ->
+                new IllegalArgumentException("해당 게시판을 찾을 수 없습니다. Board ID: " + boardId)
+        );
+        return articleRepository.findByBoardIdOrderByCreatedAtDesc(boardId).stream()
+                .map(ArticleResponseDto::new)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public ArticleResponseDto getArticleById(Long boardId, Long articleId) {
+        Article article = findArticleByBoardIdAndArticleId(boardId, articleId);
         return new ArticleResponseDto(article);
     }
 
     @Transactional
-    public ArticleResponseDto updateArticle(Long id, ArticleRequestDto articleRequestDto) {
-        Article article = findArticle(id);
+    public ArticleResponseDto updateArticle(Long boardId, Long articleId, ArticleRequestDto articleRequestDto) {
+        Article article = findArticleByBoardIdAndArticleId(boardId, articleId);
         article.update(
                 articleRequestDto.getTitle(),
                 articleRequestDto.getContent()
@@ -62,14 +70,18 @@ public class ArticleService {
     }
 
     @Transactional
-    public void deleteArticle(Long id) {
-        Article article = findArticle(id);
+    public void deleteArticle(Long boardId, Long articleId) {
+        Article article = findArticleByBoardIdAndArticleId(boardId, articleId);
         articleRepository.delete(article);
     }
 
-    private Article findArticle(Long id) {
-        return articleRepository.findById(id).orElseThrow(() ->
-                new IllegalArgumentException("해당 게시글은 존재하지 않습니다.")
+    private Article findArticleByBoardIdAndArticleId(Long boardId, Long articleId) {
+        boardRepository.findById(boardId).orElseThrow(() ->
+                new IllegalArgumentException("해당 게시판을 찾을 수 없습니다. Board ID: " + boardId)
+        );
+
+        return articleRepository.findByIdAndBoardId(articleId, boardId).orElseThrow(() ->
+                new IllegalArgumentException("해당 게시판(ID: " + boardId + ")에서 게시글(ID: " + articleId + ")을 찾을 수 없습니다.")
         );
     }
 }
