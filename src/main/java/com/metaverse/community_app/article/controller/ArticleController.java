@@ -3,9 +3,11 @@ package com.metaverse.community_app.article.controller;
 import com.metaverse.community_app.article.dto.ArticleRequestDto;
 import com.metaverse.community_app.article.dto.ArticleResponseDto;
 import com.metaverse.community_app.article.service.ArticleService;
+import com.metaverse.community_app.auth.domain.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -22,9 +24,9 @@ public class ArticleController {
     public ResponseEntity<ArticleResponseDto> createArticleForBoard(
             @PathVariable Long boardId,
             @RequestPart("articleData") ArticleRequestDto articleRequestDto,
-            @RequestPart(value = "file", required = false) MultipartFile file) {
-
-        ArticleResponseDto articleResponseDto = articleService.createArticle(boardId, articleRequestDto, file);
+            @RequestPart(value = "file", required = false) MultipartFile file,
+            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        ArticleResponseDto articleResponseDto = articleService.createArticle(principalDetails, boardId, articleRequestDto, file);
         return ResponseEntity.status(HttpStatus.CREATED).body(articleResponseDto);
     }
 
@@ -53,16 +55,18 @@ public class ArticleController {
     public ResponseEntity<ArticleResponseDto> updateArticle(
             @PathVariable Long boardId,
             @PathVariable Long id,
-            @RequestBody ArticleRequestDto articleRequestDto) {
-        ArticleResponseDto updatedArticle = articleService.updateArticle(boardId, id, articleRequestDto);
+            @RequestBody ArticleRequestDto articleRequestDto,
+            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        ArticleResponseDto updatedArticle = articleService.updateArticle(principalDetails, boardId, id, articleRequestDto);
         return ResponseEntity.ok(updatedArticle);
     }
 
     @DeleteMapping("/boards/{boardId}/articles/{id}")
     public ResponseEntity<Void> deleteArticle(
             @PathVariable Long boardId,
-            @PathVariable Long id) {
-        articleService.deleteArticle(boardId, id);
+            @PathVariable Long id,
+            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        articleService.deleteArticle(principalDetails, boardId, id);
         return ResponseEntity.noContent().build();
     }
 }

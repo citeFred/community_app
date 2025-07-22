@@ -18,6 +18,9 @@ public class ArticleResponseDto {
     private String title;
     private String content;
     private String boardTitle;
+    private String authorUsername;
+    private String authorNickname;
+    private String authorEmail;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createAt;
@@ -35,6 +38,16 @@ public class ArticleResponseDto {
         this.modifiedAt = article.getModifiedAt();
 
         this.boardTitle = article.getBoard().getTitle();
+
+        if (article.getUser() != null) {
+            this.authorUsername = article.getUser().getUsername();
+            this.authorNickname = article.getUser().getNickname();
+            this.authorEmail = article.getUser().getEmail();
+        } else {
+            this.authorUsername = null;
+            this.authorNickname = null;
+            this.authorEmail = null;
+        }
 
         if (article.getComments() != null) {
             this.comments = article.getComments().stream()

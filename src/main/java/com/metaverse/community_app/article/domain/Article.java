@@ -1,5 +1,6 @@
 package com.metaverse.community_app.article.domain;
 
+import com.metaverse.community_app.auth.domain.User;
 import com.metaverse.community_app.board.domain.Board;
 import com.metaverse.community_app.comment.domain.Comment;
 import com.metaverse.community_app.common.domain.TimeStamped;
@@ -32,16 +33,21 @@ public class Article extends TimeStamped {
     @JoinColumn(name = "board_id", nullable = false)
     private Board board;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<File> files = new ArrayList<>();
 
-    public Article(String title, String content, Board board) {
+    public Article(String title, String content, Board board, User user) {
         this.title = title;
         this.content = content;
         this.board = board;
+        this.user = user;
     }
 
     public void update(String title, String content)  {
