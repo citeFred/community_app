@@ -35,7 +35,7 @@ file.upload-dir=uploads
 ### 🧑‍🤝‍🧑 맴버구성
 - 김인용 - 백엔드 : JWT 인증/인가, 게시판 기본 CRUD, 기능 추가 예정
 
-### ⚙️ 개발 환경
+### ⚙️ 개발 환경(Development Environments - Non-Functional Requirements)
 - **MainLanguage** : `Java - JDK 17`
 - **IDE** : `IntelliJ Ultimate`
 - **Framework** : `SpringBoot 3.5x`, `JPA`
@@ -43,9 +43,9 @@ file.upload-dir=uploads
 - **Server** : `Inner TOMCAT`
 
 ### 📰 엔터티 관계 다이어그램(ERD)
-<img width="1203" height="1295" alt="스크린샷 2025-07-22 095849" src="https://github.com/user-attachments/assets/f153ba9d-a159-42d6-b1e0-7fdc791afe39" />
+<img width="450" height="480" alt="스크린샷 2025-07-22 095849" src="https://github.com/user-attachments/assets/f153ba9d-a159-42d6-b1e0-7fdc791afe39" />
 
-### 📌 주요 기능
+### 📌 주요 기능(Features - Functional Requirements)
 #### 게시판
 - [x] 게시판 구분 생성, 읽기, 수정, 삭제(CRUD)
 - ex) 자유게시판, 공지게시판, ...
