@@ -9,25 +9,31 @@ SpringBoot(Java) + JPA(ORM) 게시판 웹 서비스
 - 기본적인 커뮤니티의 게시판 백엔드 API 서버 구현 토이 프로젝트
 
 ### 🚧 실행 추가 설정
-- `src/main/resources/application` 파일 작성 필요
-```.env
-# DATABASE 설정 정보
-spring.datasource.url=jdbc:mysql://localhost:3306/community
-spring.datasource.username={USERNAME}
-spring.datasource.password={PASSWORD}
-spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
-
-# JPA 추가 설정 정보
-
-spring.jpa.hibernate.ddl-auto=update
-
-spring.jpa.properties.hibernate.show_sql=true
-spring.jpa.properties.hibernate.format_sql=true
-spring.jpa.properties.hibernate.use_sql_comments=true
-
-# 파일업로드 경로 설정 정보
-file.upload-dir=uploads
-```
+- `src/main/resources/application.properties` 파일 작성 필요
+    ```
+    # DATABASE 설정 정보
+    spring.datasource.url=jdbc:mysql://localhost:3306/community
+    spring.datasource.username={USERNAME}
+    spring.datasource.password={PASSWORD}
+    spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+    
+    # JPA 추가 설정 정보
+    spring.jpa.hibernate.ddl-auto=update
+    spring.jpa.properties.hibernate.show_sql=true
+    spring.jpa.properties.hibernate.format_sql=true
+    spring.jpa.properties.hibernate.use_sql_comments=true
+    
+    # 파일업로드 경로 설정 정보
+    file.upload-dir=uploads
+    ```
+- MySQL 데이터베이스 생성 필요(MySQL 8.0 로컬환경구축 필요)
+  ```
+  mysql -u root -p
+  ```
+  ```
+  create database community;
+  ```
+- 프로젝트 실행 시 JPA가 Entity 클래스의 테이블 자동 생성 
 
 ### 🕰️ 개발 기간
 * 25.7 - 현재
@@ -38,9 +44,9 @@ file.upload-dir=uploads
 ### ⚙️ 개발 환경(Development Environments - Non-Functional Requirements)
 - **MainLanguage** : `Java - JDK 17`
 - **IDE** : `IntelliJ Ultimate`
-- **Framework** : `SpringBoot 3.5x`, `JPA`
-- **Database** : `MySQL@8.0`
-- **Server** : `Inner TOMCAT`
+- **Framework** : `SpringBoot 3.5.3`, `JPA`, `Spring Security`
+- **Database** : `MySQL 8.0`
+- **Server** : `TOMCAT`
 
 ### 📰 엔터티 관계 다이어그램(ERD)
 <img width="450" height="480" alt="스크린샷 2025-07-22 095849" src="https://github.com/user-attachments/assets/f153ba9d-a159-42d6-b1e0-7fdc791afe39" />
