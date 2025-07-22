@@ -6,17 +6,15 @@ import com.metaverse.community_app.article.dto.ArticleResponseDto;
 import com.metaverse.community_app.article.repository.ArticleRepository;
 import com.metaverse.community_app.auth.domain.PrincipalDetails;
 import com.metaverse.community_app.auth.domain.User;
-import com.metaverse.community_app.auth.repository.UserRepository;
 import com.metaverse.community_app.board.domain.Board;
 import com.metaverse.community_app.board.repository.BoardRepository;
 import com.metaverse.community_app.file.service.FileService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -46,19 +44,16 @@ public class ArticleService {
     }
 
     @Transactional(readOnly = true)
-    public List<ArticleResponseDto> getArticles() {
-        return articleRepository.findAllByOrderByCreatedAtDesc().stream()
-                .map(ArticleResponseDto::new)
-                .collect(Collectors.toList());
+    public Page<ArticleResponseDto> getArticles(Pageable pageable) {
+        Page<Article> articlePage = articleRepository.findAll(pageable);
+        return articlePage.map(ArticleResponseDto::new);
     }
 
     @Transactional(readOnly = true)
-    public List<ArticleResponseDto> getArticlesByBoardId(Long boardId) {
+    public Page<ArticleResponseDto> getArticlesByBoardId(Long boardId, Pageable pageable) {
         getValidBoard(boardId);
-
-        return articleRepository.findByBoardIdOrderByCreatedAtDesc(boardId).stream()
-                .map(ArticleResponseDto::new)
-                .collect(Collectors.toList());
+        Page<Article> articlePage = articleRepository.findByBoardId(boardId, pageable);
+        return articlePage.map(ArticleResponseDto::new);
     }
 
     @Transactional(readOnly = true)
