@@ -37,8 +37,9 @@ public class User extends TimeStamped implements UserDetails {
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
-    public User(String username, String password, String email, UserRole userRole) {
+    public User(String username, String nickname, String password, String email, UserRole userRole) {
         this.username = username;
+        this.nickname = nickname;
         this.password = password;
         this.email = email;
         this.userRole = userRole;
