@@ -7,6 +7,7 @@ import com.metaverse.community_app.article.repository.ArticleRepository;
 import com.metaverse.community_app.board.domain.Board;
 import com.metaverse.community_app.board.repository.BoardRepository;
 import com.metaverse.community_app.file.service.FileService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,16 +16,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ArticleService {
     private final ArticleRepository articleRepository;
     private final BoardRepository boardRepository;
     private final FileService fileService;
-
-    public ArticleService(ArticleRepository articleRepository, BoardRepository boardRepository, FileService fileService) {
-        this.articleRepository = articleRepository;
-        this.boardRepository = boardRepository;
-        this.fileService = fileService;
-    }
 
     @Transactional
     public ArticleResponseDto createArticle(Long boardId, ArticleRequestDto articleRequestDto, MultipartFile file) {

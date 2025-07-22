@@ -3,6 +3,7 @@ package com.metaverse.community_app.article.controller;
 import com.metaverse.community_app.article.dto.ArticleRequestDto;
 import com.metaverse.community_app.article.dto.ArticleResponseDto;
 import com.metaverse.community_app.article.service.ArticleService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,12 +14,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class ArticleController {
     private final ArticleService articleService;
-
-    public ArticleController(ArticleService articleService) {
-        this.articleService = articleService;
-    }
 
     @PostMapping("/boards/{boardId}/articles")
     public ResponseEntity<ArticleResponseDto> createArticleForBoard(

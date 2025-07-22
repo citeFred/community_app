@@ -3,6 +3,7 @@ package com.metaverse.community_app.comment.controller;
 import com.metaverse.community_app.comment.dto.CommentRequestDto;
 import com.metaverse.community_app.comment.dto.CommentResponseDto;
 import com.metaverse.community_app.comment.service.CommentService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,12 +12,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class CommentController {
     private final CommentService commentService;
-
-    public CommentController(CommentService commentService) {
-        this.commentService = commentService;
-    }
 
     @PostMapping("/boards/{boardId}/articles/{articleId}/comments")
     public ResponseEntity<CommentResponseDto> createCommentForArticle(

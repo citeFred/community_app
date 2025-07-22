@@ -4,18 +4,17 @@ import com.metaverse.community_app.board.domain.Board;
 import com.metaverse.community_app.board.dto.BoardRequestDto;
 import com.metaverse.community_app.board.dto.BoardResponseDto;
 import com.metaverse.community_app.board.repository.BoardRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
+
 public class BoardService {
     private final BoardRepository boardRepository;
-
-    public BoardService(BoardRepository boardRepository) {
-        this.boardRepository = boardRepository;
-    }
 
     @Transactional
     public BoardResponseDto createBoard(BoardRequestDto boardRequestDto) {

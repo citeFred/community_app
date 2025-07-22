@@ -20,13 +20,12 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final JwtUtil jwtUtil; // jwt 토큰 검증 등을 필터에서 사용
-    private final UserDetailsService userDetailsService; // 사용자 정보를 로드할 UserDetailsService
+    private final JwtUtil jwtUtil;
+    private final UserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-
         // 1. HTTP 요청 헤더에서 Authorization이름의 키의 값을 가져옴
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
@@ -50,7 +49,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             response.getWriter().write(e.getMessage()); // 에러 메시지 반환 (디버깅용)
             return;
         }
-
 
         // 5. 사용자 이름이 존재하고, Spring Security Context에 아직 인증 정보가 없는 경우에만 인증 진행
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {

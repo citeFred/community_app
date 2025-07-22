@@ -3,6 +3,7 @@ package com.metaverse.community_app.file.service;
 import com.metaverse.community_app.article.domain.Article; // Article 임포트
 import com.metaverse.community_app.file.domain.File;
 import com.metaverse.community_app.file.repository.FileRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,15 +16,12 @@ import java.nio.file.Paths;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class FileService {
     private final FileRepository fileRepository;
 
     @Value("${file.upload-dir}")
     private String uploadDir;
-
-    public FileService(FileRepository fileRepository) {
-        this.fileRepository = fileRepository;
-    }
 
     @Transactional
     public void uploadFile(Article article, MultipartFile multipartFile) {

@@ -2,8 +2,8 @@ package com.metaverse.community_app.article.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.metaverse.community_app.article.domain.Article;
-import com.metaverse.community_app.comment.dto.CommentResponseDto; // 댓글 DTO 임포트
-import com.metaverse.community_app.file.dto.FileResponseDto; // 파일 DTO 임포트
+import com.metaverse.community_app.comment.dto.CommentResponseDto;
+import com.metaverse.community_app.file.dto.FileResponseDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
