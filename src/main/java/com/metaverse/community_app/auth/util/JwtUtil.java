@@ -18,15 +18,13 @@ import java.util.function.Function;
 
 @Component
 public class JwtUtil {
-
-    // 해당 값들은 application.properties에 각 키밸류로 기록, 그 값을 가져오게 됨
     @Value("${jwt.secret.key}")
     private String secretKey;
 
     @Value("${jwt.expiration.time}")
     private long expirationTime;
 
-    private Key key; // Secret Key를 Base64 디코딩하여 저장할 객체
+    private Key key;
 
     @PostConstruct
     public void init() {
