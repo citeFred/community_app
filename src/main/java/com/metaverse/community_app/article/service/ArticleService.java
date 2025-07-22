@@ -4,6 +4,9 @@ import com.metaverse.community_app.article.domain.Article;
 import com.metaverse.community_app.article.dto.ArticleRequestDto;
 import com.metaverse.community_app.article.dto.ArticleResponseDto;
 import com.metaverse.community_app.article.repository.ArticleRepository;
+import com.metaverse.community_app.auth.domain.PrincipalDetails;
+import com.metaverse.community_app.auth.domain.User;
+import com.metaverse.community_app.auth.repository.UserRepository;
 import com.metaverse.community_app.board.domain.Board;
 import com.metaverse.community_app.board.repository.BoardRepository;
 import com.metaverse.community_app.file.service.FileService;
@@ -23,13 +26,15 @@ public class ArticleService {
     private final FileService fileService;
 
     @Transactional
-    public ArticleResponseDto createArticle(Long boardId, ArticleRequestDto articleRequestDto, MultipartFile file) {
+    public ArticleResponseDto createArticle(PrincipalDetails principalDetails, Long boardId, ArticleRequestDto articleRequestDto, MultipartFile file) {
+        User logginedUser = principalDetails.getUser();
         Board board = getValidBoard(boardId);
 
         Article article = new Article(
                 articleRequestDto.getTitle(),
                 articleRequestDto.getContent(),
-                board
+                board,
+                logginedUser
         );
         Article savedArticle = articleRepository.save(article);
 
@@ -63,8 +68,10 @@ public class ArticleService {
     }
 
     @Transactional
-    public ArticleResponseDto updateArticle(Long boardId, Long articleId, ArticleRequestDto articleRequestDto) {
+    public ArticleResponseDto updateArticle(PrincipalDetails principalDetails, Long boardId, Long articleId, ArticleRequestDto articleRequestDto) {
         Article article = getValidBoardAndArticle(boardId, articleId);
+        checkArticleOwnership(article, principalDetails);
+
         article.update(
                 articleRequestDto.getTitle(),
                 articleRequestDto.getContent()
@@ -73,8 +80,10 @@ public class ArticleService {
     }
 
     @Transactional
-    public void deleteArticle(Long boardId, Long articleId) {
+    public void deleteArticle(PrincipalDetails principalDetails, Long boardId, Long articleId) {
         Article article = getValidBoardAndArticle(boardId, articleId);
+        checkArticleOwnership(article, principalDetails);
+
         articleRepository.delete(article);
     }
 
@@ -90,5 +99,11 @@ public class ArticleService {
         return articleRepository.findByIdAndBoardId(articleId, boardId).orElseThrow(() ->
                 new IllegalArgumentException("해당 게시판(ID: " + boardId + ")에서 게시글(ID: " + articleId + ")을 찾을 수 없습니다.")
         );
+    }
+
+    private void checkArticleOwnership(Article article, PrincipalDetails principalDetails) {
+        if (!article.getUser().getId().equals(principalDetails.getUser().getId())) {
+            throw new IllegalArgumentException("게시글은 작성자만 수정하거나 삭제할 수 있습니다.");
+        }
     }
 }

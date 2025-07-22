@@ -1,10 +1,14 @@
 package com.metaverse.community_app.auth.domain;
 
+import com.metaverse.community_app.article.domain.Article;
 import com.metaverse.community_app.common.domain.TimeStamped;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -31,6 +35,9 @@ public class User extends TimeStamped {
     @Column(name = "user_role")
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<Article> articles =  new ArrayList<>();
 
     public User(String username, String nickname, String password, String email, UserRole userRole) {
         this.username = username;
