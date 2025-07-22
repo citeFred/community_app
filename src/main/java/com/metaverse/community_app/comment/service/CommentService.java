@@ -6,6 +6,7 @@ import com.metaverse.community_app.comment.domain.Comment;
 import com.metaverse.community_app.comment.dto.CommentRequestDto;
 import com.metaverse.community_app.comment.dto.CommentResponseDto;
 import com.metaverse.community_app.comment.repository.CommentRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,14 +14,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class CommentService {
     private final CommentRepository commentRepository;
     private final ArticleService articleService;
-
-    public CommentService(CommentRepository commentRepository, ArticleService articleService) {
-        this.commentRepository = commentRepository;
-        this.articleService = articleService;
-    }
 
     @Transactional
     public CommentResponseDto createComment(Long boardId, Long articleId, CommentRequestDto commentRequestDto) {
