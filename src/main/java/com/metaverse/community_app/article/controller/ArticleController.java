@@ -7,6 +7,7 @@ import com.metaverse.community_app.auth.domain.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,14 +34,14 @@ public class ArticleController {
     @GetMapping("/boards/{boardId}/articles")
     public ResponseEntity<Page<ArticleResponseDto>> getArticlesByBoardId(
             @PathVariable Long boardId,
-            @PageableDefault(size = 10, sort = "createdAt", direction = org.springframework.data.domain.Sort.Direction.DESC) Pageable pageable) {
+            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
         Page<ArticleResponseDto> articleResponseDtoPage = articleService.getArticlesByBoardId(boardId, pageable);
         return ResponseEntity.ok(articleResponseDtoPage);
     }
 
     @GetMapping("/articles")
     public ResponseEntity<Page<ArticleResponseDto>> getArticles(
-            @PageableDefault(size = 10, sort = "createdAt", direction = org.springframework.data.domain.Sort.Direction.DESC) Pageable pageable) {
+            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
         Page<ArticleResponseDto> articleResponseDtoPage = articleService.getArticles(pageable);
         return ResponseEntity.ok(articleResponseDtoPage);
     }
