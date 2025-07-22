@@ -65,8 +65,8 @@ SpringBoot(Java) + JPA(ORM) 게시판 웹 서비스
 - ex) 자유게시판, 공지게시판, ...
 
 #### 게시글 - 회원 제한(Authorized User Only)
-- [x] 게시글 작성, 읽기, 수정, 삭제(CRUD) - 
-- [x] 페이징처리 및 무한스크롤 기능(예정)
+- [x] 게시글 작성, 읽기, 수정, 삭제(CRUD)
+- [x] 페이징처리 및 무한스크롤 기능
 - [ ] 게시글 좋아요(likes) 기능(예정)
 
 #### 댓글, 대댓글 - 회원 제한(Authorized User Only)
