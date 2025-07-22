@@ -5,7 +5,6 @@
 # SpringBoot Community-App Sample
 SpringBoot(Java) + JPA(ORM) 게시판 웹 서비스
 
-
 ### 🖥️ 프로젝트 소개
 - 기본적인 커뮤니티의 게시판 백엔드 API 서버 구현 토이 프로젝트
 
@@ -42,6 +41,9 @@ file.upload-dir=uploads
 - **Framework** : `SpringBoot 3.5x`, `JPA`
 - **Database** : `MySQL@8.0`
 - **Server** : `Inner TOMCAT`
+
+### 📰 엔터티 관계 다이어그램(ERD)
+<img width="1203" height="1295" alt="스크린샷 2025-07-22 095849" src="https://github.com/user-attachments/assets/f153ba9d-a159-42d6-b1e0-7fdc791afe39" />
 
 ### 📌 주요 기능
 #### 게시판
