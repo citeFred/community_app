@@ -1,5 +1,7 @@
 package com.metaverse.community_app.auth.config;
 
+import com.metaverse.community_app.auth.filter.JwtAuthenticationFilter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -11,10 +13,14 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity // Spring Security를 활성화하는 어노테이션
+@RequiredArgsConstructor
 public class SecurityConfig {
+    // JwtAuthenticationFilter 주입을 위한 final 필드 추가
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     // 비밀번호 인코더 (BCrypt)를 Bean으로 등록
     @Bean
@@ -59,7 +65,11 @@ public class SecurityConfig {
                         // 그 외의 모든 요청은 인증을 요구(==로그인상태 == jwt토큰여부)
                         // (향후 JWT 필터를 통해 인증될 예정)
                         .anyRequest().authenticated()
-                );
+                )
+
+                // JWT 필터를 UsernamePasswordAuthenticationFilter 이전에 추가합니다.
+                // 이 필터는 요청 헤더의 JWT를 검증하고 SecurityContext에 인증 정보를 설정하는 역할을 합니다.
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 }
