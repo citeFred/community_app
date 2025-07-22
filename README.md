@@ -49,30 +49,40 @@ SpringBoot(Java) + JPA(ORM) 게시판 웹 서비스
 - **Server** : `TOMCAT`
 
 ### 📰 엔터티 관계 다이어그램(ERD)
+<details>
+  <summary>1차 설계</summary>
 <img width="450" height="480" alt="스크린샷 2025-07-22 095849" src="https://github.com/user-attachments/assets/f153ba9d-a159-42d6-b1e0-7fdc791afe39" />
+</details>
+
+<details>
+  <summary>2차 설계</summary>
+<img width="862" height="1192" alt="스크린샷 2025-07-22 213259" src="https://github.com/user-attachments/assets/20fcd210-b6a4-42df-aa08-e567e6a284fc" />
+</details>
 
 ### 📌 주요 기능(Features - Functional Requirements)
-#### 게시판
+#### 게시판 - 관리자 권한(Admin Only)
 - [x] 게시판 구분 생성, 읽기, 수정, 삭제(CRUD)
 - ex) 자유게시판, 공지게시판, ...
 
-#### 게시글
-- [x] 게시글 작성, 읽기, 수정, 삭제(CRUD)
+#### 게시글 - 회원 제한(Authorized User Only)
+- [x] 게시글 작성, 읽기, 수정, 삭제(CRUD) - 
 - [ ] 페이징처리 및 무한스크롤 기능(예정)
 - [ ] 게시글 좋아요(likes) 기능(예정)
 
-#### 댓글, 대댓글
+#### 댓글, 대댓글 - 회원 제한(Authorized User Only)
 - [x] 댓글 작성, 읽기, 수정, 삭제(CRUD)
 - [ ] 댓글 좋아요(likes) 기능(예정)
 
-#### 파일 첨부
+#### 파일 첨부 - 회원 제한(Authorized User Only)
 - [x] 게시글 파일 첨부, 읽기, 수정, 삭제(CRUD)
 - [ ] 댓글 파일 첨부, 읽기, 수정, 삭제(CRUD)
 
-#### 로그인
-- [ ] JWT + Cookie 로그인(예정)
+#### 로그인 - 비회원 가능(Public)
+- [x] Spring Security + JWT 필터체인 구현체를 통한 로그인 구현
+- [x] 역할기반권한제어(Role-Based Access Control)에 따른 엔드포인트 접근 제어
+- [x] 로그인된 회원의 게시글 연관관계 설정
 - [ ] 카카오 등 소셜 API 로그인(예정)
 
-#### 회원가입
+#### 회원가입 - 비회원 가능(Public)
+- [x] Bcrypt Password 비밀번호 해싱을 통한 암호화
 - [ ] 다음 주소 API 연동(예정)
-- [ ] Bcrypt Password 해싱(예정)
