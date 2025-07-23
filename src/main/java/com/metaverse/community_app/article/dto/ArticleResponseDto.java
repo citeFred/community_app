@@ -20,7 +20,8 @@ public class ArticleResponseDto {
     private String boardTitle;
     private String authorUsername;
     private String authorNickname;
-    private String authorEmail;
+    private boolean liked;
+    private int likesCount;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createAt;
@@ -30,24 +31,24 @@ public class ArticleResponseDto {
     private List<CommentResponseDto> comments;
     private List<FileResponseDto> files;
 
-    public ArticleResponseDto(Article article) {
+    public ArticleResponseDto(Article article, int likesCount, boolean liked) {
         this.id = article.getId();
         this.title = article.getTitle();
         this.content = article.getContent();
         this.createAt = article.getCreatedAt();
         this.modifiedAt = article.getModifiedAt();
 
-        this.boardTitle = article.getBoard().getTitle();
+        if (article.getBoard() != null) {
+            this.boardTitle = article.getBoard().getTitle();
+        }
 
         if (article.getUser() != null) {
             this.authorUsername = article.getUser().getUsername();
             this.authorNickname = article.getUser().getNickname();
-            this.authorEmail = article.getUser().getEmail();
-        } else {
-            this.authorUsername = null;
-            this.authorNickname = null;
-            this.authorEmail = null;
         }
+
+        this.likesCount = likesCount;
+        this.liked = liked;
 
         if (article.getComments() != null) {
             this.comments = article.getComments().stream()
@@ -64,5 +65,29 @@ public class ArticleResponseDto {
         } else {
             this.files = List.of();
         }
+    }
+
+    // 목록 조회 시 사용되는 생성자 (좋아요 수/여부 없이 간략화)
+    public ArticleResponseDto(Article article) {
+        this.id = article.getId();
+        this.title = article.getTitle();
+        this.content = article.getContent();
+        this.createAt = article.getCreatedAt();
+        this.modifiedAt = article.getModifiedAt();
+
+        if (article.getBoard() != null) {
+            this.boardTitle = article.getBoard().getTitle();
+        }
+
+        if (article.getUser() != null) {
+            this.authorUsername = article.getUser().getUsername();
+            this.authorNickname = article.getUser().getNickname();
+        }
+
+        this.likesCount = 0;
+        this.liked = false;
+
+        this.comments = List.of(); // 목록 조회 시에는 comments는 제외 (N+1 방지)
+        this.files = List.of();    // 목록 조회 시에는 files도 제외 (N+1 방지)
     }
 }
