@@ -339,7 +339,7 @@ SpringBoot(Java) + JPA(ORM) 게시판 웹 서비스
 - [x] Spring Security + JWT 필터체인 구현체를 통한 로그인 구현
 - [x] 역할기반권한제어(Role-Based Access Control)에 따른 엔드포인트 접근 제어
 - [x] 로그인된 회원의 게시글 연관관계 설정
-- [ ] 카카오, Google 등 소셜 API 로그인(예정)
+- [x] Google 등 소셜 API 로그인
 
 ### ✅ 회원가입 - 비회원 가능(Public)
 <details>
