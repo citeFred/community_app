@@ -2,10 +2,13 @@ package com.metaverse.community_app.comment.service;
 
 import com.metaverse.community_app.article.domain.Article;
 import com.metaverse.community_app.article.service.ArticleService;
+import com.metaverse.community_app.auth.domain.PrincipalDetails;
+import com.metaverse.community_app.auth.domain.User;
 import com.metaverse.community_app.comment.domain.Comment;
 import com.metaverse.community_app.comment.dto.CommentRequestDto;
 import com.metaverse.community_app.comment.dto.CommentResponseDto;
 import com.metaverse.community_app.comment.repository.CommentRepository;
+import com.metaverse.community_app.likes.commentLike.repository.CommentLikeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +21,7 @@ import java.util.stream.Collectors;
 public class CommentService {
     private final CommentRepository commentRepository;
     private final ArticleService articleService;
+    private final CommentLikeRepository commentLikeRepository;
 
     @Transactional
     public CommentResponseDto createComment(Long boardId, Long articleId, CommentRequestDto commentRequestDto) {
@@ -52,9 +56,18 @@ public class CommentService {
     }
 
     @Transactional(readOnly = true)
-    public CommentResponseDto getCommentById(Long boardId, Long articleId, Long commentId) {
+    public CommentResponseDto getCommentById(PrincipalDetails principalDetails, Long boardId, Long articleId, Long commentId) {
         Comment comment = getValidComment(boardId, articleId, commentId);
-        return new CommentResponseDto(comment);
+
+        int likesCount = (int) commentLikeRepository.countByComment(comment);
+        boolean liked = false;
+
+        if (principalDetails != null) {
+            User currentUser = principalDetails.getUser();
+            liked = commentLikeRepository.findByCommentAndUser(comment, currentUser).isPresent();
+        }
+
+        return new CommentResponseDto(comment, likesCount, liked);
     }
 
     @Transactional
@@ -82,7 +95,7 @@ public class CommentService {
         return parentComment;
     }
 
-    private Comment getValidComment(Long boardId, Long articleId, Long commentId) {
+    public Comment getValidComment(Long boardId, Long articleId, Long commentId) {
         articleService.getValidBoardAndArticle(boardId, articleId);
 
         return commentRepository.findByIdAndArticleId(commentId, articleId).orElseThrow(() ->
