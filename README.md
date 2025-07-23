@@ -25,6 +25,17 @@ SpringBoot(Java) + JPA(ORM) 게시판 웹 서비스
     
     # 파일업로드 경로 설정 정보
     file.upload-dir=uploads
+
+    # JWT Configs (JwtUtil)
+    jwt.secret.key={BASE64EncodedKey}
+    jwt.expiration.time=3600000000
+
+    # Google SNS Login Configs
+    spring.security.oauth2.client.registration.google.client-id={YOUR_GOOGLE_CLIENT_ID}
+    spring.security.oauth2.client.registration.google.client-secret={YOUR_GOOGLE_CLIENT_SECRET}
+    spring.security.oauth2.client.registration.google.redirect-uri=http://localhost:8080/login/oauth2/code/google
+    spring.security.oauth2.client.registration.google.scope=profile,email
+    spring.security.oauth2.client.registration.google.client-name=Google
     ```
 - MySQL 데이터베이스 생성 필요(MySQL 8.0 로컬환경구축 필요)
   ```
@@ -36,7 +47,7 @@ SpringBoot(Java) + JPA(ORM) 게시판 웹 서비스
 - 프로젝트 실행 시 JPA가 Entity 클래스의 테이블 자동 생성 
 
 ## 🕰️ 개발 기간
-* 25.7 - 현재
+* 25.7 ~ 현재
 
 ## 🧑‍🤝‍🧑 맴버구성
 - 김인용 - 백엔드 : JWT 인증/인가, 게시판 기본 CRUD, 기능 추가 예정
@@ -354,3 +365,19 @@ SpringBoot(Java) + JPA(ORM) 게시판 웹 서비스
 </details>
 
 - [x] Bcrypt Password 비밀번호 해싱을 통한 암호화
+
+### ✅ Spring AI 활용 AI 챗봇 - 회원 제한(Authorized User Only)
+<details>
+  <summary>AI 챗봇 기능 세부 요구사항</summary>
+
+  ```
+1. 로그인한 사용자(회원)는 AI 챗봇과 대화할 수 있어야 한다.
+2. 사용자는 챗봇에게 텍스트 기반 질문을 전송할 수 있어야 한다.
+3. 챗봇은 사용자의 질문에 대한 응답을 텍스트 형태로 제공해야 한다.
+4. 챗봇과의 대화는 Spring AI 프레임워크를 활용하여 OpenAI의 특정 모델(예: GPT-3.5 Turbo)과 연동되어야 한다.
+5. 챗봇과의 상호작용은 RESTful API 엔드포인트를 통해 이루어져야 한다.
+6. 챗봇과의 대화 내용은 향후 특정 목적(예: 기록, 학습)을 위해 저장될 수 있는 구조를 고려한다.
+  ```
+</details>
+
+- [ ] Open AI 외부 API 요청 및 응답 구조 구현
