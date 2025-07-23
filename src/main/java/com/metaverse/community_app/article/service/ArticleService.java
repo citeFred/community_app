@@ -9,6 +9,7 @@ import com.metaverse.community_app.auth.domain.User;
 import com.metaverse.community_app.board.domain.Board;
 import com.metaverse.community_app.board.repository.BoardRepository;
 import com.metaverse.community_app.file.service.FileService;
+import com.metaverse.community_app.likes.articleLike.repository.ArticleLikeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +23,7 @@ public class ArticleService {
     private final ArticleRepository articleRepository;
     private final BoardRepository boardRepository;
     private final FileService fileService;
+    private final ArticleLikeRepository articleLikeRepository;
 
     @Transactional
     public ArticleResponseDto createArticle(PrincipalDetails principalDetails, Long boardId, ArticleRequestDto articleRequestDto, MultipartFile file) {
@@ -57,9 +59,18 @@ public class ArticleService {
     }
 
     @Transactional(readOnly = true)
-    public ArticleResponseDto getArticleById(Long boardId, Long articleId) {
+    public ArticleResponseDto getArticleById(PrincipalDetails principalDetails, Long boardId, Long articleId) {
         Article article = getValidBoardAndArticle(boardId, articleId);
-        return new ArticleResponseDto(article);
+
+        int currentLikesCount = (int) articleLikeRepository.countByArticle(article);
+        boolean liked = false;
+        System.out.println(principalDetails.getUser());
+        if (principalDetails != null) {
+            User currentUser = principalDetails.getUser();
+            liked = articleLikeRepository.findByArticleAndUser(article, currentUser).isPresent();
+        }
+
+        return new ArticleResponseDto(article, currentLikesCount, liked);
     }
 
     @Transactional
