@@ -2,6 +2,8 @@ package com.metaverse.community_app.comment.domain;
 
 import com.metaverse.community_app.article.domain.Article;
 import com.metaverse.community_app.common.domain.TimeStamped;
+import com.metaverse.community_app.likes.articleLike.domain.ArticleLike;
+import com.metaverse.community_app.likes.commentLike.domain.CommentLike;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,6 +35,9 @@ public class Comment extends TimeStamped {
 
     @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> childComments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CommentLike> commentLikes = new ArrayList<>();
 
     public Comment(String content, Article article) {
         this.content = content;
