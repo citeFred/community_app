@@ -170,8 +170,10 @@ SpringBoot(Java) + JPA(ORM) 게시판 웹 서비스
   ```
 </details>
 <details>
+    <img width="450" height="480" alt="image" src="https://github.com/user-attachments/assets/84c6cb57-f496-40e3-bd73-eed7d0648afd" />
+
   <summary>3차 설계(좋아요 테이블 추가)</summary>
-  
+
   ```
   erDiagram
       USER {
@@ -228,8 +230,112 @@ SpringBoot(Java) + JPA(ORM) 게시판 웹 서비스
       COMMENT |o--o{ COMMENT : replies_to
   ```
 </details>
-<img width="450" height="480" alt="image" src="https://github.com/user-attachments/assets/84c6cb57-f496-40e3-bd73-eed7d0648afd" />
 
+<details>
+  <summary>4차 설계(챗봇 및 대화기록 테이블 추가)</summary>
+  
+  ```
+erDiagram
+    USER {
+        long id PK "user_id"
+        string username UK
+        string nickname
+        string password
+        string email UK
+        enum user_role
+        datetime created_at
+        datetime modified_at
+    }
+
+    BOARD {
+        long id PK "board_id"
+        string title
+        datetime created_at
+        datetime modified_at
+    }
+
+    ARTICLE {
+        long id PK "article_id"
+        string title
+        string content
+        long board_id FK
+        long user_id FK
+        datetime created_at
+        datetime modified_at
+    }
+
+    COMMENT {
+        long id PK "comment_id"
+        string content
+        long article_id FK
+        long parent_comment_id FK
+        datetime created_at
+        datetime modified_at
+    }
+
+    FILE {
+        long id PK "file_id"
+        string original_file_name
+        string stored_file_name
+        string file_path
+        long article_id FK
+        datetime created_at
+        datetime modified_at
+    }
+
+    ARTICLE_LIKE {
+        long id PK "article_like_id"
+        long user_id FK
+        long article_id FK
+        datetime created_at
+        datetime modified_at
+    }
+
+    COMMENT_LIKE {
+        long id PK "comment_like_id"
+        long user_id FK
+        long comment_id FK
+        datetime created_at
+        datetime modified_at
+    }
+
+    CHAT_ROOM {
+        long chat_room_id PK "chat_room_id"
+        long user_id FK
+        string title
+        string model_used
+        datetime created_at
+        datetime modified_at
+    }
+
+    CHAT_DIALOG {
+        long chat_dialog_id PK "chat_dialog_id"
+        long chat_room_id FK
+        enum sender_type
+        text content
+        datetime timestamp
+        int token_count
+        datetime created_at
+        datetime modified_at
+    }
+
+    USER ||--o{ ARTICLE : creates
+    BOARD ||--o{ ARTICLE : belongs_to
+    ARTICLE ||--o{ COMMENT : has_comment
+    ARTICLE ||--o{ FILE : has_file
+    COMMENT |o--o{ COMMENT : replies_to
+
+    USER ||--o{ ARTICLE_LIKE : likes
+    ARTICLE ||--o{ ARTICLE_LIKE : is_liked_by
+
+    USER ||--o{ COMMENT_LIKE : likes
+    COMMENT ||--o{ COMMENT_LIKE : is_liked_by
+
+    USER ||--o{ CHAT_ROOM : owns
+    CHAT_ROOM ||--o{ CHAT_DIALOG : contains
+  ```
+</details>
+<img width="450" height="480" alt="image" src="https://github.com/user-attachments/assets/31cb1020-d486-4e5b-b9fc-bc71ebb82dac" />
 
 ## 📌 주요 기능(Features - Functional Requirements)
 ### ✅ 게시판 - 관리자 권한(Admin Only)
