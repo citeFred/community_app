@@ -5,6 +5,7 @@ import com.metaverse.community_app.board.domain.Board;
 import com.metaverse.community_app.comment.domain.Comment;
 import com.metaverse.community_app.common.domain.TimeStamped;
 import com.metaverse.community_app.file.domain.File;
+import com.metaverse.community_app.likes.articleLike.domain.ArticleLike;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -42,6 +43,9 @@ public class Article extends TimeStamped {
 
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<File> files = new ArrayList<>();
+
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ArticleLike> articleLikes = new ArrayList<>();
 
     public Article(String title, String content, Board board, User user) {
         this.title = title;
