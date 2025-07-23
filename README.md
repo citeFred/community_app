@@ -98,7 +98,9 @@ SpringBoot(Java) + JPA(ORM) 게시판 웹 서비스
 </details>
 
 <details>
-  <summary>2차 설계</summary>
+  <img width="450" height="480" alt="스크린샷 2025-07-22 213259" src="https://github.com/user-attachments/assets/20fcd210-b6a4-42df-aa08-e567e6a284fc" />
+
+  <summary>2차 설계(회원 테이블 추가)</summary>
   
   ```
   erDiagram
@@ -156,7 +158,66 @@ SpringBoot(Java) + JPA(ORM) 게시판 웹 서비스
       COMMENT |o--o{ COMMENT : replies_to
   ```
 </details>
-<img width="450" height="480" alt="스크린샷 2025-07-22 213259" src="https://github.com/user-attachments/assets/20fcd210-b6a4-42df-aa08-e567e6a284fc" />
+<details>
+  <summary>3차 설계(좋아요 테이블 추가)</summary>
+  
+  ```
+  erDiagram
+      USER {
+          long id PK "user_id"
+          string username UK
+          string nickname
+          string password
+          string email UK
+          enum user_role
+          datetime created_at
+          datetime modified_at
+      }
+  
+      BOARD {
+          long id PK "board_id"
+          string title
+          datetime created_at
+          datetime modified_at
+      }
+  
+      ARTICLE {
+          long id PK "article_id"
+          string title
+          string content
+          long board_id FK
+          long user_id FK
+          datetime created_at
+          datetime modified_at
+      }
+  
+      COMMENT {
+          long id PK "comment_id"
+          string content
+          long article_id FK
+          long parent_comment_id FK
+          datetime created_at
+          datetime modified_at
+      }
+  
+      FILE {
+          long id PK "file_id"
+          string original_file_name
+          string stored_file_name
+          string file_path
+          long article_id FK
+          datetime created_at
+          datetime modified_at
+      }
+  
+      USER ||--o{ ARTICLE : creates
+      BOARD ||--o{ ARTICLE : belongs_to
+      ARTICLE ||--o{ COMMENT : has_comment
+      ARTICLE ||--o{ FILE : has_file
+      COMMENT |o--o{ COMMENT : replies_to
+  ```
+</details>
+<img width="450" height="480" alt="image" src="https://github.com/user-attachments/assets/84c6cb57-f496-40e3-bd73-eed7d0648afd" />
 
 
 ## 📌 주요 기능(Features - Functional Requirements)
@@ -241,7 +302,6 @@ SpringBoot(Java) + JPA(ORM) 게시판 웹 서비스
 </details>
 
 - [x] 게시글 파일 첨부, 읽기, 수정, 삭제(CRUD)
-- [ ] 댓글 파일 첨부, 읽기, 수정, 삭제(CRUD)
 
 ### ✅ 로그인 - 비회원 가능(Public)
 <details>
@@ -279,7 +339,7 @@ SpringBoot(Java) + JPA(ORM) 게시판 웹 서비스
 - [x] Spring Security + JWT 필터체인 구현체를 통한 로그인 구현
 - [x] 역할기반권한제어(Role-Based Access Control)에 따른 엔드포인트 접근 제어
 - [x] 로그인된 회원의 게시글 연관관계 설정
-- [ ] 카카오 등 소셜 API 로그인(예정)
+- [ ] 카카오, Google 등 소셜 API 로그인(예정)
 
 ### ✅ 회원가입 - 비회원 가능(Public)
 <details>
@@ -294,4 +354,3 @@ SpringBoot(Java) + JPA(ORM) 게시판 웹 서비스
 </details>
 
 - [x] Bcrypt Password 비밀번호 해싱을 통한 암호화
-- [ ] 다음 주소 API 연동(예정)
