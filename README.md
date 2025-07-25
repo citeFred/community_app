@@ -486,4 +486,4 @@ erDiagram
   ```
 </details>
 
-- [ ] Open AI 외부 API 요청 및 응답 구조 구현
+- [x] Open AI 외부 API 요청 및 응답 구조 구현
