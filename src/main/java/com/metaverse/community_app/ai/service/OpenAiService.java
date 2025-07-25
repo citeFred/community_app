@@ -4,10 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.ai.audio.transcription.AudioTranscriptionPrompt;
 import org.springframework.ai.audio.transcription.AudioTranscriptionResponse;
 import org.springframework.ai.chat.messages.AssistantMessage;
+import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.SystemMessage;
 import org.springframework.ai.chat.messages.UserMessage;
+import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.Prompt;
+import org.springframework.ai.chat.prompt.SystemPromptTemplate;
 import org.springframework.ai.embedding.Embedding;
 import org.springframework.ai.embedding.EmbeddingOptions;
 import org.springframework.ai.embedding.EmbeddingRequest;
@@ -23,6 +26,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -35,11 +39,33 @@ public class OpenAiService {
     private final OpenAiAudioSpeechModel openAiAudioSpeechModel;
     private final OpenAiAudioTranscriptionModel openAiAudioTranscriptionModel;
 
+    // 대화 기록을 포함하여 AI 응답을 생성하기 위한 인터페이스 직접 사용
+    private final ChatModel chatModel;
+
     @Value("${spring.ai.openai.chat.options.model}")
     private String aiModel;
 
     @Value("${spring.ai.openai.chat.options.temperature}")
     private Double aiTemperature;
+
+    // [0] ChatModel의 히스토리(이전대화내용)을 사용할 수 있도록 커스텀
+    public String generateWithHistory(List<Message> conversationHistory) {
+        // 1. 시스템 메시지를 생성
+        SystemPromptTemplate systemPromptTemplate = new SystemPromptTemplate("You are a helpful assistant who speaks Korean.");
+        Message systemMessage = systemPromptTemplate.createMessage();
+
+        // 2. 전달받은 대화 기록의 맨 앞에 시스템 메시지를 추가하여 최종 프롬프트를 구성
+        List<Message> finalMessages = new ArrayList<>();
+        finalMessages.add(systemMessage);
+        finalMessages.addAll(conversationHistory);
+
+        // 3. 프롬프트
+        Prompt prompt = new Prompt(finalMessages);
+
+        // 4. 요청과 응답
+        ChatResponse chatResponse = chatModel.call(prompt);
+        return chatResponse.getResult().getOutput().getText();
+    }
 
     // [1] ChatModel 사용법 - 응답반환
     public String generate(String message) {
