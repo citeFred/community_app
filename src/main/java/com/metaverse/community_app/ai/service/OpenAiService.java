@@ -44,8 +44,8 @@ public class OpenAiService {
     // [1] ChatModel 사용법 - 응답반환
     public String generate(String message) {
         // Message
-        SystemMessage systemMessage = new SystemMessage("");
-        UserMessage userMessage = new UserMessage("");
+        SystemMessage systemMessage = new SystemMessage("You are a helpful assistant who speaks Korean.");
+        UserMessage userMessage = new UserMessage(message);
         AssistantMessage assistantMessage = new AssistantMessage("");
 
         // 옵션
