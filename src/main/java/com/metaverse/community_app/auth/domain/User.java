@@ -1,6 +1,7 @@
 package com.metaverse.community_app.auth.domain;
 
 import com.metaverse.community_app.article.domain.Article;
+import com.metaverse.community_app.chatbot.domain.ChatRoom;
 import com.metaverse.community_app.common.domain.TimeStamped;
 import com.metaverse.community_app.likes.articleLike.domain.ArticleLike;
 import com.metaverse.community_app.likes.commentLike.domain.CommentLike;
@@ -46,6 +47,9 @@ public class User extends TimeStamped {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CommentLike> commentLikes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ChatRoom> chatRooms = new ArrayList<>();
 
     public User(String username, String nickname, String password, String email, UserRole userRole) {
         this.username = username;
