@@ -36,7 +36,15 @@ SpringBoot(Java) + JPA(ORM) 게시판 웹 서비스
     spring.security.oauth2.client.registration.google.redirect-uri=http://localhost:8080/login/oauth2/code/google
     spring.security.oauth2.client.registration.google.scope=profile,email
     spring.security.oauth2.client.registration.google.client-name=Google
+
+    # OpenAI Key
+    spring.ai.openai.api-key={YOUR_OPEN_AI_KEY}
+    spring.ai.openai.chat.options.model=gpt-3.5-turbo
+    spring.ai.openai.chat.options.temperature=0.7
     ```
+- OpenAI 개발자 API KEY 생성 필요 - https://platform.openai.com/api-keys
+- Google API Client ID, Client Secret 생성 필요 - https://console.developers.google.com/
+    
 - MySQL 데이터베이스 생성 필요(MySQL 8.0 로컬환경구축 필요)
   ```
   mysql -u root -p
@@ -47,7 +55,7 @@ SpringBoot(Java) + JPA(ORM) 게시판 웹 서비스
 - 프로젝트 실행 시 JPA가 Entity 클래스의 테이블 자동 생성 
 
 ## 🕰️ 개발 기간
-* 25.7 ~ 현재
+- 1차 MVP 완료 : 25.7.18 ~ 25.7.25 (7일간)
 
 ## 🧑‍🤝‍🧑 맴버구성
 - 김인용 - 백엔드 : JWT 인증/인가, 게시판 기본 CRUD, 기능 추가 예정
@@ -55,7 +63,7 @@ SpringBoot(Java) + JPA(ORM) 게시판 웹 서비스
 ## ⚙️ 개발 환경(Development Environments - Non-Functional Requirements)
 - **MainLanguage** : `Java - JDK 17`
 - **IDE** : `IntelliJ Ultimate`
-- **Framework** : `SpringBoot 3.5.3`, `JPA`, `Spring Security`
+- **Framework** : `SpringBoot 3.5.3`, `JPA`, `Spring Security`, `Spring AI - OpenAI 1.0.0`
 - **Database** : `MySQL 8.0`
 - **Server** : `TOMCAT`
 
@@ -300,42 +308,40 @@ erDiagram
     }
 
     CHAT_ROOM {
-        long chat_room_id PK "chat_room_id"
-        long user_id FK
+        long id PK "chat_room_id"
         string title
-        string model_used
+        long user_id FK
         datetime created_at
         datetime modified_at
     }
 
     CHAT_DIALOG {
-        long chat_dialog_id PK "chat_dialog_id"
-        long chat_room_id FK
-        enum sender_type
+        long id PK "chat_dialog_id"
         text content
-        datetime timestamp
-        int token_count
+        enum sender_type
+        long chat_room_id FK
         datetime created_at
         datetime modified_at
     }
 
-    USER ||--o{ ARTICLE : creates
-    BOARD ||--o{ ARTICLE : belongs_to
-    ARTICLE ||--o{ COMMENT : has_comment
-    ARTICLE ||--o{ FILE : has_file
-    COMMENT |o--o{ COMMENT : replies_to
-
-    USER ||--o{ ARTICLE_LIKE : likes
-    ARTICLE ||--o{ ARTICLE_LIKE : is_liked_by
-
-    USER ||--o{ COMMENT_LIKE : likes
-    COMMENT ||--o{ COMMENT_LIKE : is_liked_by
-
-    USER ||--o{ CHAT_ROOM : owns
-    CHAT_ROOM ||--o{ CHAT_DIALOG : contains
+    USER ||--o{ ARTICLE : "creates"
+    USER ||--o{ CHAT_ROOM : "owns"
+    USER ||--o{ ARTICLE_LIKE : "likes"
+    USER ||--o{ COMMENT_LIKE : "likes"
+    
+    BOARD ||--o{ ARTICLE : "belongs to"
+    
+    ARTICLE ||--o{ COMMENT : "has"
+    ARTICLE ||--o{ FILE : "has"
+    ARTICLE ||--o{ ARTICLE_LIKE : "is liked by"
+    
+    COMMENT |o--o{ COMMENT : "replies to"
+    COMMENT ||--o{ COMMENT_LIKE : "is liked by"
+    
+    CHAT_ROOM ||--o{ CHAT_DIALOG : "contains"
   ```
 </details>
-<img width="450" height="480" alt="image" src="https://github.com/user-attachments/assets/31cb1020-d486-4e5b-b9fc-bc71ebb82dac" />
+<img width="450" height="480" alt="image" src="https://github.com/user-attachments/assets/a53ed7c7-7281-403e-9417-843d1c32cfda" />
 
 ## 📌 주요 기능(Features - Functional Requirements)
 ### ✅ 게시판 - 관리자 권한(Admin Only)
