@@ -18,6 +18,13 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
+
+import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
@@ -38,16 +45,18 @@ public class SecurityConfig {
         return authProvider;
     }
 
-    // AuthenticationManager를 수동 Bean으로 등록
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
-    // SecurityFilterChain을 수동 Bean으로 등록하여 HTTP 보안 규칙 정의
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                // 1. CORS 설정을 Security 필터 체인에 통합
+                .cors(withDefaults())
+
+                // 2. 다른 보안 설정
                 .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
@@ -55,22 +64,33 @@ public class SecurityConfig {
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
 
-                // 인가(Authorization, 엔드포인트의 접근 권한) 규칙 정의:
+                // 3. 인가 규칙 설정
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/auth/**", "/login/oauth2/**").permitAll()
                         .anyRequest().authenticated()
                 )
 
-                // 요청 헤더의 JWT를 검증하고 SecurityContext에 인증 정보를 설정하는 역할
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
 
-                // OAuth2 로그인 설정 추가
                 .oauth2Login(oauth2 -> oauth2
-                        // OAuth2 로그인 성공 후 처리할 서비스 지정
                         .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
-                        // OAuth2 로그인 성공 후 JWT 발행 및 리디렉션 처리 핸들러 지정
                         .successHandler(oauth2LoginSuccessHandler)
                 );
         return http.build();
+    }
+
+    // 4. CORS 정책을 상세하게 정의하는 Bean (가장 중요)
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+
+        configuration.setAllowedOrigins(Arrays.asList("http://127.0.0.1:5500", "http://localhost:5500", "null"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }
