@@ -1,14 +1,17 @@
 package com.metaverse.community_app.chatbot.controller;
 
 import com.metaverse.community_app.auth.domain.PrincipalDetails;
+import com.metaverse.community_app.chatbot.dto.ChatDialogResponseDto;
 import com.metaverse.community_app.chatbot.dto.ChatRequestDto;
 import com.metaverse.community_app.chatbot.dto.ChatResponseDto;
+import com.metaverse.community_app.chatbot.dto.ChatRoomResponseDto;
 import com.metaverse.community_app.chatbot.service.ChatbotService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -18,12 +21,12 @@ public class ChatbotController {
     private final ChatbotService chatbotService;
 
     @PostMapping("/rooms")
-    public ResponseEntity<?> createRoom(
-            @RequestBody Map<String, String> request,
-            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+    public ResponseEntity<ChatRoomResponseDto> createRoom(
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @RequestBody Map<String, String> request) {
         String title = request.get("title");
         if (title == null || title.isBlank()) {
-            return ResponseEntity.badRequest().body(Map.of("error", "채팅방 제목은 필수입니다."));
+            return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(chatbotService.createRoom(principalDetails, title));
     }
@@ -35,5 +38,17 @@ public class ChatbotController {
             @AuthenticationPrincipal PrincipalDetails principalDetails) {
         ChatResponseDto response = chatbotService.processMessage(principalDetails, roomId, chatRequestDto);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/rooms")
+    public ResponseEntity<List<ChatRoomResponseDto>> getRooms(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        return ResponseEntity.ok(chatbotService.findRoomsByUser(principalDetails));
+    }
+
+    @GetMapping("/rooms/{roomId}/messages")
+    public ResponseEntity<List<ChatDialogResponseDto>> getChatDialogs(
+            @PathVariable Long roomId,
+            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        return ResponseEntity.ok(chatbotService.getChatDialogs(roomId, principalDetails));
     }
 }

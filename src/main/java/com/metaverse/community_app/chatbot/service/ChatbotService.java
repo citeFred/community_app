@@ -6,8 +6,10 @@ import com.metaverse.community_app.auth.domain.User;
 import com.metaverse.community_app.chatbot.domain.ChatDialog;
 import com.metaverse.community_app.chatbot.domain.ChatRoom;
 import com.metaverse.community_app.chatbot.domain.SenderType;
+import com.metaverse.community_app.chatbot.dto.ChatDialogResponseDto;
 import com.metaverse.community_app.chatbot.dto.ChatRequestDto;
 import com.metaverse.community_app.chatbot.dto.ChatResponseDto;
+import com.metaverse.community_app.chatbot.dto.ChatRoomResponseDto;
 import com.metaverse.community_app.chatbot.repository.ChatDialogRepository;
 import com.metaverse.community_app.chatbot.repository.ChatRoomRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,7 @@ import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,10 +31,11 @@ public class ChatbotService {
     private final OpenAiService openAiService;
 
     @Transactional
-    public ChatRoom createRoom(PrincipalDetails principalDetails, String title) {
+    public ChatRoomResponseDto createRoom(PrincipalDetails principalDetails, String title) {
         User currentUser = principalDetails.getUser();
         ChatRoom newRoom = new ChatRoom(currentUser, title);
-        return chatRoomRepository.save(newRoom);
+        ChatRoom savedRoom = chatRoomRepository.save(newRoom);
+        return new ChatRoomResponseDto(savedRoom);
     }
 
     /**
@@ -62,6 +66,30 @@ public class ChatbotService {
         saveDialog(chatRoom, SenderType.ASSISTANT, aiResponseMessage);
 
         return new ChatResponseDto(aiResponseMessage);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ChatRoomResponseDto> findRoomsByUser(PrincipalDetails principalDetails) {
+        User currentUser = principalDetails.getUser();
+        return chatRoomRepository.findAllByUserOrderByCreatedAtDesc(currentUser)
+                .stream()
+                .map(ChatRoomResponseDto::new)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<ChatDialogResponseDto> getChatDialogs(Long roomId, PrincipalDetails principalDetails) {
+        ChatRoom chatRoom = chatRoomRepository.findById(roomId)
+                .orElseThrow(() -> new IllegalArgumentException("채팅방을 찾을 수 없습니다. ID: " + roomId));
+
+        if (!chatRoom.getUser().getId().equals(principalDetails.getUser().getId())) {
+            throw new IllegalArgumentException("해당 채팅방에 접근할 권한이 없습니다.");
+        }
+
+        return chatRoom.getChatDialogs().stream()
+                .sorted(Comparator.comparing(ChatDialog::getCreatedAt))
+                .map(ChatDialogResponseDto::new)
+                .collect(Collectors.toList());
     }
 
     private void saveDialog(ChatRoom chatRoom, SenderType senderType, String content) {
