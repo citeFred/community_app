@@ -9,11 +9,14 @@ import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.io.Decoders;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 
 @Component
@@ -35,9 +38,17 @@ public class JwtUtil {
     }
 
     // JWT 토큰 생성
-    public String generateToken(String username) {
+    public String generateToken(UserDetails userDetails) {
+        Map<String, Object> claims = new HashMap<>();
+        String role = userDetails.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .findFirst()
+                .orElse("");
+        claims.put("role", role);
+
         return Jwts.builder()
-                .subject(username) // 클레임 "sub" (subject) 설정
+                .claims(claims)
+                .subject(userDetails.getUsername()) // 클레임 "sub" (subject) 설정
                 .issuedAt(new Date(System.currentTimeMillis())) // 발행 시간
                 .expiration(new Date(System.currentTimeMillis() + expirationTime)) // 만료 시간
                 .signWith(key) // <-- 변경: 알고리즘을 명시하지 않고 Key 객체만 전달. JJWT가 Key를 기반으로 알고리즘 유추

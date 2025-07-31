@@ -26,7 +26,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
 
         // JWT Access Token 생성
-        String accessToken = jwtUtil.generateToken(principalDetails.getUsername());
+        String accessToken = jwtUtil.generateToken(principalDetails);
 
         // 클라이언트로 JWT를 전달하는 방식은 여러가지가 있습니다.
         // 1. JWT를 URL 쿼리 파라미터로 포함하여 클라이언트(프론트엔드) 페이지로 리디렉션

@@ -51,13 +51,12 @@ public class AuthController {
             );
 
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            String accessToken = jwtUtil.generateToken(userDetails.getUsername());
+            // userDetails.getUsername() 대신 userDetails 객체 전체를 전달
+            String accessToken = jwtUtil.generateToken(userDetails);
 
             return ResponseEntity.ok(new AuthResponseDto(userDetails.getUsername(), accessToken));
         } catch (BadCredentialsException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new AuthResponseDto(null, null));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new AuthResponseDto(null, null));
         }
     }
 }
