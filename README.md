@@ -7,8 +7,8 @@ SpringBoot(Java) + JPA(ORM) 게시판 웹 서비스
 
 ## 🖥️ 프로젝트 소개
 - 기본적인 커뮤니티의 게시판 백엔드 API 서버 구현 토이 프로젝트
-- 간단 샘플 테스트용 프론트엔드 추가 https://github.com/citeFred/communitiy_front
-  - VSCode -> Live Server를 통해 테스트(http://127.0.0.1:5500/)
+- 간단 샘플 테스트용 리액트 프론트엔드 추가 https://github.com/citeFred/community_front
+<img width="879" height="532" alt="스크린샷 2025-07-31 204619" src="https://github.com/user-attachments/assets/1eff9413-1205-41e7-9fda-7f31aa8a9fc6" />
 
 ## 🚧 실행 추가 설정
 - `src/main/resources/application.properties` 파일 작성 필요
